@@ -84,7 +84,7 @@ PyFLEXTRKR (https://github.com/FlexTRKR/PyFLEXTRKR) gained several features betw
 | **Latitude-dependent pixel area** | #135 (Mar 2026) | `area_method: latlon` computes the true area of every grid cell, so cloud, PF and rain-volume statistics are not biased at high latitudes. Adds `total_volrain` and `total_heavyvolrain` (area-integrated rain volume) |
 | **Periodic-boundary-aware PF statistics and speed** | #136 (Apr 2026) | PF longitudes/latitudes are computed with a circular mean, and movement speed accounts for periodic wrap, for MCSs crossing the boundary (but see the known issue in [Section 9](#9-known-issues-and-usage-notes)) |
 | **New rain statistics** | #128 (Jan 2026) | New variable `rainrate_p95` (95th percentile rain rate under the cloud shield) |
-| **MCSMIP identification** | `robustmcspf_saag.py` (from the SAAG tracking, PR #33, Dec 2022), run with `runscripts/run_mcs_tbpf_mcsmip.py` | Implements the MCSMIP criteria (peak rain rate and rain-volume thresholds). Not new in 2025, but first used for a global dataset in V3 |
+| **MCSMIP definition** | `robustmcspf_saag.py` (from the SAAG tracking, PR #33, Dec 2022), run with `runscripts/run_mcs_tbpf_mcsmip.py` | Implements the MCSMIP criteria (peak rain rate and rain-volume thresholds). First used for a global dataset in V3 |
 | **Tracks longer than the preset range** | #139 (May 2026) | `duration_range_auto_update` extends the maximum track duration instead of stopping when a track is longer than `duration_range` (available in PyFLEXTRKR; the V3 production configs use `duration_range: [2, 400]`) |
 | **Quicklook and animation scripts** | #118, #125, #130 | `Analysis/make_mcs_animation.py` and plotting scripts handle cross-dateline domains, use smoothed trajectories, and have configurable map options |
 
@@ -113,8 +113,8 @@ All user-defined parameters are set in the config file in yaml format (`Feng21/c
 CCSs are identified with a **detect-and-spread** method:
 
 1. The Tb field is smoothed with a 10-grid-point (~100 km) box filter. Contiguous regions with smoothed Tb < 225 K (at least 4 grid points) are labeled as **cold cores**.
-2. Each core is expanded outward until the original (unsmoothed) Tb reaches 241 K, giving the **cold anvil** and the full **cold cloud shield (CCS)**. A warm-anvil extent (Tb < 261 K) is also recorded.
-3. Missing Tb pixels are filled with a 5 × 5 median filter; Tb outside 160–330 K is discarded; clouds smaller than 800 km² are removed.
+2. Each core is expanded outward until the original (unsmoothed) Tb reaches 241 K, giving the **cold anvil** and the full **cold cloud shield (CCS)**.
+3. Missing Tb pixels are filled with a 5 × 5 median filter; Tb outside 160–330 K is discarded; clouds smaller than 800 km² are not tracked.
 4. CCSs that share a large precipitation feature are **linked** (`linkpf: 1`). Rain rate is smoothed with a 5 × 5 filter and regions ≥ 3 mm h⁻¹ and ≥ 648 km² are labeled as PFs used to link CCSs. A CCS cut in two by a gap in the cold shield but sharing one PF is thus treated as one system.
 
 ### 4.2 Tracking
@@ -172,7 +172,7 @@ Examples used in this document: `stats_f21/mcs_tracks_final_extc_20200101.0000_2
 
 The monthly and annual gridded products used for the climatology figures (MCS precipitation, MCS precipitation/cloud hours, and MCS number; sub-directories `monthly/` and `monthly_extc/` of the stats folders) are derived from the pixel files with `cloudtracknumber > 0` (MCS cloud and rainfall) and `pcptracknumber > 0` (MCS precipitation hours).
 
-**Data access.** The track statistics, monthly and climatology files are archived on Zenodo (`TODO: V3 DOI and Zenodo package contents`). The full pixel-level dataset (see the volume table below) is shared through NERSC Globus on request. Please contact Zhe Feng (zhe.feng@pnnl.gov) with a short description of the intended use, and a Globus link to the V3 folder (`MCS_Global/V3/`) will be provided; access is granted per request so that data usage can be tracked. (V2 is at https://portal.nersc.gov/project/m1867/mcs_global_v2/.)
+**Data access.** The track statistics, monthly and climatology files are archived on Zenodo (`TODO: V3 DOI and Zenodo package contents`). The full pixel-level dataset (see the volume table below) is shared through NERSC Globus on request. Please contact Zhe Feng (zhe.feng@pnnl.gov) with a short description of the intended use, and a Globus link to the V3 folder (`MCS_Global/V3/`) will be provided; access is granted per request so that data usage can be tracked. (V2 is at `MCS_Global/V2/`.)
 
 **Data volume.** Sizes were measured in October 2026 (apparent file sizes; 1 GB = 10⁹ bytes, 1 TB = 10¹² bytes). All files are NetCDF4.
 
@@ -406,7 +406,7 @@ The two definitions agree well on the global distribution of MCS rainfall contri
 
 - **Mid-latitude storm tracks in the cold season.** MCSMIP gives a much higher MCS contribution: +13% in the Southern Ocean storm track in JJA (35% vs. 23%) and +13% (43% vs. 30%) and +11% (52% vs. 41%) in the North Pacific and North Atlantic storm tracks in DJF. MCSMIP has fewer precipitation requirements (no PF size or shape criteria), so it also includes more cloud systems associated with extended frontal and atmospheric-river rain bands over the oceans, some with embedded convection. The F21 definition's PF area, skewness and heavy-rain ratio criteria filter out many of these systems (Zhang et al. 2026, Section 4.4, Fig. 9).
 - **Land regions in DJF** with many marginal systems also differ more: Africa +9%, Amazon +6%, southeastern South America +2% (the paper reports +8%, +6% and +4% for 2011–2020). These regions also showed sensitivity between V06B and V07B in the paper (Fig. 7f), consistent with marginal MCSs whose identification depends on the thresholds.
-- Overall, MCSMIP identifies about **18% more MCSs** than F21 (about 41,100 vs. 34,800 tracks per year, 1998–2024).
+- Overall, MCSMIP identifies about **18% more number of MCSs** than F21 (about 41,100 vs. 34,800 tracks per year, 1998–2024).
 
 The choice of definition therefore matters most for mid-latitude cold-season studies, and depends on whether frontal precipitation systems should count as MCSs. Zhang et al. (2026) found the same definition sensitivity with IMERG V06B.
 
@@ -421,7 +421,7 @@ The MergIR Tb input has gaps in space and time that affect the tracking. They we
 - During **2003–2005**, East Asia and the western Pacific (about 130°E–180°) frequently had **missing IR Tb data at 4 specific hours of the day**. Cloud systems in the affected region cannot be identified at those hours, so their tracks are interrupted. This **artificially increased the number of MCSs with a 5-hour lifetime** greatly (10-, 11- and 17-hour MCSs also became more common) and **reduced the number of longer-lived MCSs**. The impact on MCS statistics in the eastern Maritime Continent was significant.
 - During **2006–2011**, the southeastern Pacific (about 150°W–70°W) had frequent missing Tb at **2 specific hours of the day**, again artificially increasing the number of 5-hour MCSs. The impact on MCS statistics is smaller, because MCSs are less frequent east of 180°W.
 - In other years missing data also occur, but the impact is much smaller. The 30-minute Tb snapshot used for tracking has fewer missing data than the 00-minute one.
-- The V1 quality check also noted that the global Tb production was interrupted on 11–30 June 2017 (annotated on the 2017 slide), and recommended not using MCS data for that month. No corresponding drop is visible in the V3 track counts (about 3,400 track initiations in June 2017, comparable to the neighboring months), but users should be aware of it.
+- The V1 quality check also noted that the global Tb production was interrupted on 11–30 June 2017 (annotated on the 2017 slide), but these missing data have been filled in V3 and do not affect the tracking for that year.
 
 **Valid MergIR data coverage (V3 period).** Figure 4 shows the fraction of valid Tb data for 1998–2024 at the 00- and 30-minute marks. For the 30-minute snapshot used in tracking, the valid fraction over the western Pacific/East Asia/Australia (about 120°E–180°) is roughly 60–90% in 1998–2005 and nearly complete afterward (the 00-minute snapshot is poorer until about 2015). Over the southeastern Pacific (about 150°W–60°W, 45°S–equator) it is roughly 70–90% until about 2020, and south of about 45°S it is persistently low (about 0–40%) until about 2020. Coverage is essentially complete from 2021.
 
@@ -429,7 +429,7 @@ The MergIR Tb input has gaps in space and time that affect the tracking. They we
 
 **Figure 4.** Fraction of valid MergIR Tb data (%) for periods of 2–6 years during 1998–2024: 00-minute (left) and 30-minute (right) snapshots. The 30-minute snapshot, used for MCS tracking, has fewer missing data.
 
-**Signature in the V3 tracks.** The share of MCSs that last exactly 5 hours is about 2–3% in a normal year and region. Among MCSs first detected at 130°E–180°, it is 38% in 1998, 62% in 1999, 11% in 2000, and **47%, 68% and 60% in 2003–2005** (F21; MCSMIP is similar), and it returns to 2–3% from 2006. Among MCSs first detected at 150°W–70°W, 45°S–0°, the share is 15–43% in 1998–2011 and 3–4% from 2012. (Computed from `track_duration` and the first `meanlon`/`meanlat` of each track in the F21 `final_extc` files.)
+**Signature in the V3 tracks.** The share of MCSs that last exactly 5 hours is about 2–3% in a normal year and region. Among MCSs first detected at 130°E–180°, it is 38% in 1998, **62% in 1999**, 11% in 2000, and **47%, 68% and 60% in 2003–2005** (F21; MCSMIP is similar), and it returns to 2–3% from 2006. Among MCSs first detected at 150°W–70°W, 45°S–0°, the share is 15–43% in 1998–2011 and 3–4% from 2012. (Computed from `track_duration` and the first `meanlon`/`meanlat` of each track in the F21 `final_extc` files.)
 
 | Region (first detection) | Years with a strongly inflated 5-hour MCS share | Share of 5-hour MCSs (normal: 2–3%) |
 |---|---|---|
@@ -442,13 +442,13 @@ The MergIR Tb input has gaps in space and time that affect the tracking. They we
 
 ## 8. MCS Snapshot Examples
 
-Animations of the pixel-level MCS data (F21 definition, IMERG V07B Tb and precipitation) for two 3-day periods. Each frame shows (a) IR brightness temperature and (b) precipitation with MCS masks (shading), tracks (purple lines), initiation locations (dots), MCS track numbers, and the largest PF equivalent diameter (magenta circles). The animations shown here use every second hour (frames at 00:30, 02:30, ... UTC) to load quickly; the linked mp4 files contain all 72 hourly frames at higher resolution.
+Animations of the pixel-level MCS data (F21 definition, IMERG V07B Tb and precipitation) for two 3-day periods. Each frame shows (a) IR brightness temperature and (b) precipitation with MCS masks (shading), tracks (purple lines), initiation locations (dots), MCS track numbers, and the largest PF equivalent diameter (magenta circles). Each animation shows all 72 hourly frames (00:30 UTC on the first day to 23:30 UTC on the last day) at 2 frames per second. The GIFs are large (21 MB and 14 MB) and may take a moment to load; the linked mp4 files are smaller (6 MB and 4 MB), have playback controls, and are a good alternative on slow connections.
 
-**Amazon, 1–3 March 2024** ([hourly mp4, 6 MB](figures/Amazon_animation.mp4))
+**Amazon, 1–3 March 2024** ([mp4, 6 MB](figures/Amazon_animation.mp4))
 
 ![Amazon MCS animation, 1–3 March 2024](figures/Amazon_animation.gif)
 
-**Sahel and surrounding regions, 26–28 August 2025** ([hourly mp4, 4 MB](figures/Sahel_animation.mp4))
+**Sahel and surrounding regions, 26–28 August 2025** ([mp4, 4 MB](figures/Sahel_animation.mp4))
 
 ![Sahel MCS animation, 26–28 August 2025](figures/Sahel_animation.gif)
 
