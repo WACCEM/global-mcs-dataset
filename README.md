@@ -4,7 +4,7 @@ Prepared by Zhe Feng (zhe.feng@pnnl.gov)
 Pacific Northwest National Laboratory
 Document version: V3, October 2026
 
-> **Items still to be filled in before release** are marked `TODO` (V3 DOI, contents of the Zenodo package, and two incomplete TC-kept pixel sets).
+> **Items still to be filled in before release** are marked `TODO` (V3 DOI, contents of the Zenodo package, and one incomplete TC-kept pixel set).
 
 <!--
 To build a static PDF: the animated GIFs cannot be embedded in a PDF. Swap each GIF for its
@@ -179,7 +179,7 @@ The monthly and annual gridded products used for the climatology figures (MCS pr
 | Product | Feng21 | MCSMIP | Both |
 |---|---|---|---|
 | Pixel-level files, TC excluded (`mcstracking_extc_*`), **recommended** | 3.33 TB (242,975 files) | 3.35 TB (242,975 files) | 6.68 TB (485,950 files) |
-| Pixel-level files, TC kept (`mcstracking_*`) | 3.27 TB (238,283 files) | 3.35 TB (242,427 files) | 6.62 TB (480,710 files) |
+| Pixel-level files, TC kept (`mcstracking_*`) | 3.27 TB (238,283 files) | 3.35 TB (242,975 files) | 6.63 TB (481,258 files) |
 | Track statistics `final_extc` (**recommended**) | 9.95 GB (28 files) | 11.56 GB (28 files) | 21.51 GB (56 files) |
 | Track statistics `final` (TC kept) | 10.24 GB (28 files) | 11.87 GB (28 files) | 22.11 GB (56 files) |
 | Track statistics `robust` (intermediate) | 9.60 GB (28 files) | 11.12 GB (28 files) | 20.72 GB (56 files) |
@@ -187,12 +187,12 @@ The monthly and annual gridded products used for the climatology figures (MCS pr
 | Monthly statistics maps, TC excluded (`monthly*/statsmap`) | 26.33 GB (333 files) | 29.42 GB (333 files) | 55.75 GB (666 files) |
 | Multi-year climatology, TC excluded (`monthly*/timmean_1998_2024`) | 0.27 GB (6 files) | 0.28 GB (6 files) | 0.55 GB (12 files) |
 | Monthly rain maps and climatologies, TC kept (`monthly/`) | – | 9.33 GB (326 files) | 9.33 GB (326 files) |
-| **Total per definition** | **6.67 TB (482,014 files)** | **6.78 TB (486,484 files)** | **13.45 TB (968,498 files)** |
+| **Total per definition** | **6.67 TB (482,014 files)** | **6.78 TB (487,032 files)** | **13.45 TB (969,046 files)** |
 | Recommended subset (TC-excluded pixel files, `final_extc` stats, monthly and climatology) | 3.38 TB (243,675 files) | 3.40 TB (243,675 files) | 6.78 TB (487,350 files) |
 | Ancillary (`MergedIR_ValidData` valid-data statistics, `map_data`) | | | 0.38 GB (357 files) |
-| **Grand total** | | | **13.45 TB (968,855 files)** |
+| **Grand total** | | | **13.45 TB (969,403 files)** |
 
-In the table, `monthly*` is the `monthly/` folder for Feng21 (built from the TC-excluded pixel files) and the `monthly_extc/` folder for MCSMIP; the MCSMIP `monthly/` folder holds the TC-kept rain maps. Pixel-level files exist for nearly every hour of the period (about 8,720–8,780 files per year, 6,552 in 2025). All 28 yearly statistics files exist for each product. `TODO: the TC-kept pixel sets are incomplete for Feng21 in 2013 (4,067 of 8,759 files) and for MCSMIP in 2009 (8,210 of 8,758 files); regenerate before release. The TC-excluded pixel sets are complete.`
+In the table, `monthly*` is the `monthly/` folder for Feng21 (built from the TC-excluded pixel files) and the `monthly_extc/` folder for MCSMIP; the MCSMIP `monthly/` folder holds the TC-kept rain maps. Pixel-level files exist for nearly every hour of the period (about 8,720–8,780 files per year, 6,552 in 2025). All 28 yearly statistics files exist for each product. `TODO: the Feng21 TC-kept pixel set is incomplete in 2013 (4,067 of 8,759 files); restore before release. The TC-excluded pixel sets and the MCSMIP TC-kept set are complete.`
 
 ### 5.2 Hourly pixel-level data
 
