@@ -231,9 +231,9 @@ The MCS track numbers in `cloudtracknumber` and `pcptracknumber` are the same, b
 
 If no cloud is identified at a given hour, or the Tb data are largely missing (≥ 40% of the global grid), there is no pixel-level file for that time. Smaller regional gaps in Tb do not remove the file (see [Section 7](#7-missing-ir-data-and-impacts-on-tracking-accuracy)).
 
-![Figure 1a](figures/Amazon_mcs_tbpf_20240303_003000.png)
+![Figure 1a](figures/Sahel_mcs_tbpf_20250826_203000.png)
 
-**Figure 1.** Example snapshot of the pixel-level data over the Amazon, 3 March 2024 00:30 UTC (F21). (a) IR brightness temperature, (b) IMERG V07B precipitation. The magenta contour in (a) and the color shadings in (b) denote MCS masks (`cloudtracknumber`). Purple lines are MCS tracks, purple dots are initiation locations, and numbers are MCS track numbers. Magenta circles in (b) show the largest PF equivalent diameter within an MCS. More examples in [Section 8](#8-mcs-snapshot-examples).
+**Figure 1.** Example snapshot of the pixel-level data over the Sahel, 26 August 2025 20:30 UTC (F21). (a) IR brightness temperature, (b) IMERG V07B precipitation. The magenta contour in (a) and the color shadings in (b) denote MCS masks (`cloudtracknumber`). Purple lines are MCS tracks, purple dots are initiation locations, and numbers are MCS track numbers. Magenta circles in (b) show the largest PF equivalent diameter within an MCS. More examples in [Section 8](#8-mcs-snapshot-examples).
 
 ### 5.3 Track statistics data
 
