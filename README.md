@@ -34,7 +34,7 @@ static snapshot (figures/*_animation_static.png) before converting, for example:
 
 ## 1. Introduction
 
-This document describes the global Mesoscale Convective System (MCS) tracking dataset developed by Feng et al. (2021). **Version 3 (V3)** is produced with the Python FLEXible object TRaKeR (PyFLEXTRKR; Feng et al., 2023) from satellite infrared brightness temperature (Tb) and **GPM IMERG Version 07B** precipitation, and is described in Zhang et al. (2026). It replaces the IMERG V06B-based V2 dataset (June 2000 – December 2020), because IMERG V06B processing has been discontinued.
+This document describes the global Mesoscale Convective System (MCS) tracking dataset developed by [Feng et al. (2021)](https://doi.org/10.1029/2020JD034202). **Version 3 (V3)** is produced with the Python FLEXible object TRaKeR (PyFLEXTRKR; [Feng et al., 2023](https://doi.org/10.5194/gmd-16-2753-2023)) from satellite infrared brightness temperature (Tb) and **GPM IMERG Version 07B** precipitation, and is described in [Zhang et al. (2026)](https://doi.org/10.1029/2026JD046673). It replaces the IMERG V06B-based V2 dataset (June 2000 – December 2020), because IMERG V06B processing has been discontinued.
 
 | | V3 |
 |---|---|
@@ -43,7 +43,7 @@ This document describes the global Mesoscale Convective System (MCS) tracking da
 | Grid | 0.1° × 0.1° (1200 × 3600), the IMERG grid |
 | Time step | Hourly. Tb is the 30-minute-mark snapshot (hh:30 UTC); precipitation is the hourly mean |
 | Input data | NOAA CPC/NCEP MergIR Tb + GPM IMERG V07B Final Run |
-| MCS definitions | Two: **F21** (Feng et al. 2021, retuned for IMERG V07B) and **MCSMIP** (Feng et al. 2025) |
+| MCS definitions | Two: **F21** ([Feng et al. 2021](https://doi.org/10.1029/2020JD034202), retuned for IMERG V07B) and **MCSMIP** ([Feng et al. 2025](https://doi.org/10.1029/2024JD042204)) |
 | Typical MCS count | About 34,800 (F21) and 41,100 (MCSMIP) tracks per year (1998–2024 mean, TC-excluded) |
 
 ---
