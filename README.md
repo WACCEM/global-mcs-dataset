@@ -4,7 +4,7 @@ Prepared by Zhe Feng (zhe.feng@pnnl.gov)
 Pacific Northwest National Laboratory
 Document version: V3, October 2026
 
-> **Items still to be filled in before release** are marked `TODO` (V3 DOI, contents of the Zenodo package, and one incomplete TC-kept pixel set).
+> **Items still to be filled in before release** are marked `TODO` (the V3 DOI).
 
 <!--
 To build a static PDF: the animated GIFs cannot be embedded in a PDF. Swap each GIF for its
@@ -57,7 +57,7 @@ This document describes the global Mesoscale Convective System (MCS) tracking da
 - Differences between IMERG V07B and V06B that matter for MCS statistics (Zhang et al. 2026, Sections 3–4):
   - V07B has a 0.1° eastward PMW geolocation error corrected, and uses the SHARPEN scheme, which sharpens precipitation systems.
   - Over land, both versions underestimate heavy (10–25 mm h⁻¹) and intense (> 25 mm h⁻¹) rain compared with radar, and the underestimate is larger in V07B. Over the ocean V07B improves intense-rain retrievals.
-  - As a result, **MCSs tracked in V07B have on average about 9–10% lower mean PF rain rate and about 26–31% lower heavy-rain volume ratio** than V06B-based MCSs, while MCS lifetime, minimum Tb, PF area and total rain volume are similar.
+  - As a result, **MCSs tracked in V07B have on average about 9–10% lower mean PF rain rate and about 26–31% lower heavy-rain volume ratio** than V06B-based MCSs (2011–2020; JJA and DJF means over the MCS hot-spot regions of Zhang et al. 2026, Fig. 8), while MCS lifetime, minimum Tb, PF area and total rain volume are similar.
   - At 45°–60° in the winter hemisphere, V07B-based MCS frequency and rain contribution are lower than V06B.
 
 ### 2.2 Two MCS definitions
@@ -67,7 +67,7 @@ V3 provides MCS tracks under two definitions (Zhang et al. 2026, Section 2.5). B
 | | **F21** (Feng et al. 2021, retuned for V07B) | **MCSMIP** (Feng et al. 2025; Prein et al. 2024) |
 |---|---|---|
 | Cold cloud shield (CCS) | Contiguous Tb < 241 K, area ≥ 40,000 km², lasting ≥ 4 consecutive hours, with Tb < 225 K at least once | Same |
-| Precipitation criteria | Lifetime-dependent thresholds on the largest precipitation feature (PF, contiguous rain > 2 mm h⁻¹, major axis ≥ 100 km): PF area, PF mean rain rate, PF rain-rate skewness and heavy-rain (> 10 mm h⁻¹) volume ratio | Peak rain rate ≥ 10 mm h⁻¹ within the cloud shield throughout the 4-hour period, and rain volume ≥ 20,000 km² mm h⁻¹ at least once during the lifetime (equivalent to 2 mm h⁻¹ averaged over 100 km × 100 km) |
+| Precipitation criteria | Lifetime-dependent thresholds on PF area, PF mean rain rate and PF rain-rate skewness of the largest precipitation feature (PF, contiguous rain > 2 mm h⁻¹, major axis ≥ 100 km), and on the heavy-rain (> 10 mm h⁻¹) volume ratio of up to the three largest PFs | Peak rain rate ≥ 10 mm h⁻¹ within the cloud shield throughout the 4-hour period, and rain volume ≥ 20,000 km² mm h⁻¹ at least once during the lifetime (equivalent to 2 mm h⁻¹ averaged over 100 km × 100 km) |
 | PF size/shape criteria | Yes | No |
 | Retuning for IMERG V07B | PF thresholds recalibrated (see [Section 4.3](#43-mcs-identification-two-definitions)); tuning is needed because V07B has more light-to-moderate and less heavy rain than V06B | None needed |
 | Strictness | Stricter. Designed to improve mid-latitude MCS detection | Less stringent. Identifies about 18% more MCSs globally, and more MCSs in mid-latitude oceanic storm tracks in the cold season (Zhang et al. 2026, Section 4.4 and Fig. 9; see [Section 6](#6-mcs-climatology)) |
@@ -125,9 +125,9 @@ CCSs in consecutive hours are linked when they overlap by more than 50% (`othres
 
 A tracked CCS is an MCS if it satisfies the cloud-shield criteria and the precipitation criteria of the chosen definition. Once identified, the entire track (initiation, mature and decay phases) is labeled and written to the output; the `mcs_status` and `pf_mcsstatus` flags mark the times when the Tb and precipitation criteria are met.
 
-**Common cloud-shield criteria (both definitions):** CCS (Tb < 241 K) area ≥ 40,000 km² (`mcs_tb_area_thresh`) for ≥ 4 consecutive hours (`mcs_tb_duration_thresh`), allowing a 1-hour gap (`mcs_tb_gap`), with Tb < 225 K observed at least once. Small tracks (≤ 12 hours) that merge into or split from an MCS are included with that MCS (`mcs_tb_merge_duration`, `mcs_tb_split_duration`).
+**Common cloud-shield criteria (both definitions):** CCS (Tb < 241 K) area ≥ 40,000 km² (`mcs_tb_area_thresh`) for ≥ 4 consecutive hours (`mcs_tb_duration_thresh`; a missing hour ends the period, `mcs_tb_gap: 1`), with Tb < 225 K observed at least once. Small tracks (≤ 12 hours) that merge into or split from an MCS are included with that MCS (`mcs_tb_merge_duration`, `mcs_tb_split_duration`).
 
-**F21 precipitation criteria (retuned for IMERG V07B).** Over a period of ≥ 4 hours (`mcs_pf_durationthresh`), the largest PF (rain > 2 mm h⁻¹; major axis 100–1,800 km) must exceed thresholds that can depend on the period length *L* (hours):
+**F21 precipitation criteria (retuned for IMERG V07B).** Over a period of ≥ 4 hours (`mcs_pf_durationthresh`), the largest PF (rain > 2 mm h⁻¹; major axis 100–1,800 km) must exceed thresholds that can depend on the period length *L* (hours). PF area, mean rain rate and skewness are those of the largest PF, while the heavy-rain volume ratio uses up to the three largest PFs (`nmaxpf` = 3):
 
 | PF parameter | Threshold = intercept + slope × *L* | Percentile of radar-defined MCS PFs |
 |---|---|---|
@@ -136,7 +136,7 @@ A tracked CCS is an MCS if it satisfies the cloud-shield criteria and the precip
 | PF rain-rate skewness | 0.136783 | 2nd |
 | Heavy-rain volume ratio (%) | 4.833391 | 20th |
 
-Here the heavy-rain volume ratio is the accumulated rain from pixels > 10 mm h⁻¹ divided by the total accumulated PF rain over the period. The first three parameters must be exceeded simultaneously for ≥ 4 hours, and the heavy-rain ratio must be exceeded for the period. The coefficients are stored in the global attributes `coefs_pf_area`, `coefs_pf_rr`, `coefs_pf_skew` and `coefs_pf_heavyratio` as [intercept, slope]. The percentiles were obtained by optimizing the MCS share of total precipitation against the radar-based V3 CONUS MCS database (NEXRAD + Stage IV, 2004–2021; Feng 2024), following Feng et al. (2021), so that the V07B-based statistics stay consistent with V06B (Zhang et al. 2026, Sections 2.6 and 4.1). Compared with V06B, intensity-related thresholds (mean rain rate, heavy-rain ratio) are lower and the area threshold is higher. For simplicity the lifetime slopes of the last three parameters are set to zero.
+Here the heavy-rain volume ratio is the accumulated rain from pixels > 10 mm h⁻¹ divided by the total accumulated rain of up to the three largest PFs, summed over the period. The first three parameters must be exceeded simultaneously for ≥ 4 hours, and the heavy-rain ratio must be exceeded for the period. The coefficients are stored in the global attributes `coefs_pf_area`, `coefs_pf_rr`, `coefs_pf_skew` and `coefs_pf_heavyratio` as [intercept, slope]. The percentiles were obtained by optimizing the MCS share of total precipitation against the radar-based V3 CONUS MCS database (NEXRAD + Stage IV; Feng 2024), following Feng et al. (2021), so that the V07B-based statistics stay consistent with V06B (Zhang et al. 2026, Sections 2.6 and 4.1). The radar database covers 2004–2021 (full years 2004–2017 and April–August 2018–2021), whereas the calibration used the warm seasons (April–August) of 2011–2020. Compared with V06B, intensity-related thresholds (mean rain rate, heavy-rain ratio) are lower and the area threshold is higher. For simplicity the lifetime slopes of the last three parameters are set to zero.
 
 **MCSMIP precipitation criteria.** There is no PF size or shape requirement (`mcs_pf_majoraxis_thresh: 0`). The peak PF rain rate must be ≥ 10 mm h⁻¹ for at least 4 hours of the period, and the total rain volume under the cloud shield must exceed 20,000 km² mm h⁻¹ (`mcs_min_rainvol_thresh`) for at least 1 hour (`mcs_volrain_duration_thresh`). The global attributes `mcs_min_rainvol_thresh` and `mcs_volrain_duration_thresh` record these values.
 
@@ -164,22 +164,22 @@ Track statistics files, one per tracking period:
 
 | File | Content |
 |---|---|
-| `mcs_tracks_final_extc_<start>_<end>.nc` (MCSMIP: `mcsmip_mcs_tracks_final_extc_*`) | **Recommended.** Final MCS track statistics, tropical cyclones excluded. Matches the `mcstracking_extc_*` pixel files |
-| `mcs_tracks_final_<start>_<end>.nc` | Same, tropical cyclones kept. Matches the `mcstracking_*` pixel files |
-| `mcs_tracks_robust_<start>_<end>.nc` | Intermediate product (MCSs identified, before the movement-speed step); normally not needed |
+| `mcs_tracks_final_extc_<start>_<end>.nc` (MCSMIP: `mcsmip_mcs_tracks_final_extc_<start>_<end>.nc`) | **Recommended.** Final MCS track statistics, tropical cyclones excluded. Matches the `mcstracking_extc_*` pixel files |
+| `mcs_tracks_final_<start>_<end>.nc` (MCSMIP: `mcsmip_mcs_tracks_final_<start>_<end>.nc`) | Same, tropical cyclones kept. Matches the `mcstracking_*` pixel files |
+| `mcs_tracks_robust_<start>_<end>.nc` (MCSMIP: `mcsmip_mcs_tracks_robust_<start>_<end>.nc`) | Intermediate product (MCSs identified, before the movement-speed step); normally not needed |
 
 Examples used in this document: `stats_f21/mcs_tracks_final_extc_20200101.0000_20210101.0000.nc` (35,849 tracks) and `mcstracking_extc_f21/20200101.0000_20210101.0000/mcstrack_20200101_003000.nc`.
 
 The monthly and annual gridded products used for the climatology figures (MCS precipitation, MCS precipitation/cloud hours, and MCS number; sub-directories `monthly/` and `monthly_extc/` of the stats folders) are derived from the pixel files with `cloudtracknumber > 0` (MCS cloud and rainfall) and `pcptracknumber > 0` (MCS precipitation hours).
 
-**Data access.** The track statistics, monthly and climatology files are archived on Zenodo (`TODO: V3 DOI and Zenodo package contents`). The full pixel-level dataset (see the volume table below) is shared through NERSC Globus on request. Please contact Zhe Feng (zhe.feng@pnnl.gov) with a short description of the intended use, and a Globus link to the V3 folder (`MCS_Global/V3/`) will be provided; access is granted per request so that data usage can be tracked. (V2 is at `MCS_Global/V2/`.)
+**Data access.** The TC-excluded track statistics (`final_extc`), monthly rain maps and multi-year climatology files of both definitions (six `tar.gz` archives, 29.6 GB) are archived on Zenodo (`TODO: V3 DOI`). The full pixel-level dataset (see the volume table below) is shared through NERSC Globus on request. Please contact Zhe Feng (zhe.feng@pnnl.gov) with a short description of the intended use, and a Globus link to the V3 folder (`MCS_Global/V3/`) will be provided; access is granted per request so that data usage can be tracked. (V2 is at `MCS_Global/V2/`.)
 
 **Data volume.** Sizes were measured in October 2026 (apparent file sizes; 1 GB = 10⁹ bytes, 1 TB = 10¹² bytes). All files are NetCDF4.
 
 | Product | Feng21 | MCSMIP | Both |
 |---|---|---|---|
 | Pixel-level files, TC excluded (`mcstracking_extc_*`), **recommended** | 3.33 TB (242,975 files) | 3.35 TB (242,975 files) | 6.68 TB (485,950 files) |
-| Pixel-level files, TC kept (`mcstracking_*`) | 3.27 TB (238,283 files) | 3.35 TB (242,975 files) | 6.63 TB (481,258 files) |
+| Pixel-level files, TC kept (`mcstracking_*`) | 3.34 TB (242,975 files) | 3.35 TB (242,975 files) | 6.69 TB (485,950 files) |
 | Track statistics `final_extc` (**recommended**) | 9.95 GB (28 files) | 11.56 GB (28 files) | 21.51 GB (56 files) |
 | Track statistics `final` (TC kept) | 10.24 GB (28 files) | 11.87 GB (28 files) | 22.11 GB (56 files) |
 | Track statistics `robust` (intermediate) | 9.60 GB (28 files) | 11.12 GB (28 files) | 20.72 GB (56 files) |
@@ -187,12 +187,12 @@ The monthly and annual gridded products used for the climatology figures (MCS pr
 | Monthly statistics maps, TC excluded (`monthly*/statsmap`) | 26.33 GB (333 files) | 29.42 GB (333 files) | 55.75 GB (666 files) |
 | Multi-year climatology, TC excluded (`monthly*/timmean_1998_2024`) | 0.27 GB (6 files) | 0.28 GB (6 files) | 0.55 GB (12 files) |
 | Monthly rain maps and climatologies, TC kept (`monthly/`) | – | 9.33 GB (326 files) | 9.33 GB (326 files) |
-| **Total per definition** | **6.67 TB (482,014 files)** | **6.78 TB (487,032 files)** | **13.45 TB (969,046 files)** |
+| **Total per definition** | **6.74 TB (486,706 files)** | **6.78 TB (487,032 files)** | **13.52 TB (973,738 files)** |
 | Recommended subset (TC-excluded pixel files, `final_extc` stats, monthly and climatology) | 3.38 TB (243,675 files) | 3.40 TB (243,675 files) | 6.78 TB (487,350 files) |
 | Ancillary (`MergedIR_ValidData` valid-data statistics, `map_data`) | | | 0.38 GB (357 files) |
-| **Grand total** | | | **13.45 TB (969,403 files)** |
+| **Grand total** | | | **13.52 TB (974,095 files)** |
 
-In the table, `monthly*` is the `monthly/` folder for Feng21 (built from the TC-excluded pixel files) and the `monthly_extc/` folder for MCSMIP; the MCSMIP `monthly/` folder holds the TC-kept rain maps. Pixel-level files exist for nearly every hour of the period (about 8,720–8,780 files per year, 6,552 in 2025). All 28 yearly statistics files exist for each product. `TODO: the Feng21 TC-kept pixel set is incomplete in 2013 (4,067 of 8,759 files); restore before release. The TC-excluded pixel sets and the MCSMIP TC-kept set are complete.`
+In the table, `monthly*` is the `monthly/` folder for Feng21 (built from the TC-excluded pixel files) and the `monthly_extc/` folder for MCSMIP; the MCSMIP `monthly/` folder holds the TC-kept rain maps. Pixel-level files exist for nearly every hour of the period (about 8,720–8,780 files per year, 6,552 in 2025). All 28 yearly statistics files exist for each product. All four pixel-level sets have the same number of hourly files in every year.
 
 ### 5.2 Hourly pixel-level data
 
@@ -208,7 +208,7 @@ The pixel-level data are on the 0.1° IMERG grid (`lat` = 1200, `lon` = 3600; la
 | `longitude`, `latitude` | lat, lon | 2-D longitude and latitude of each grid cell |
 | `tb` | time, lat, lon | Brightness temperature, K (30-min snapshot, full field; NaN where missing) |
 | `precipitation` | time, lat, lon | IMERG V07B precipitation, mm h⁻¹ (hourly mean, full field) |
-| `cloudtype` | time, lat, lon | Cloud classification from Tb: 1 = cold core (Tb ≤ 225 K), 2 = cold anvil (225–241 K), 3 = warm anvil (241–261 K), 0 = missing Tb. Pixels with the fill value (5, read as NaN by most readers) are not cloud (Tb > 261 K) |
+| `cloudtype` | time, lat, lon | Cloud classification from Tb: 1 = cold core (Tb < 225 K), 2 = cold anvil (225 K ≤ Tb < 241 K), 3 = warm anvil (241 K ≤ Tb < 261 K), 0 = missing Tb. Pixels with the fill value (5, read as NaN by most readers) are not cloud (Tb ≥ 261 K) |
 | `cloudnumber` | time, lat, lon | Number of the cloud object at each pixel (after linking by `pf_number`); not tracked. Identical to `feature_number` |
 | `feature_number` | time, lat, lon | Cloud feature number used for tracking. Matches `cloudnumber` in the track statistics files |
 | `nfeatures` | time | Number of features labeled in this file |
