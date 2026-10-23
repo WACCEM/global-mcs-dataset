@@ -4,7 +4,7 @@ Prepared by Zhe Feng (zhe.feng@pnnl.gov)
 Pacific Northwest National Laboratory
 Document version: V3, October 2026
 
-> **Items still to be filled in before release** are marked `TODO` (the V3 DOI).
+> **DOI: <https://doi.org/10.5281/zenodo.23523604>**
 
 <!--
 To build a static PDF: the animated GIFs cannot be embedded in a PDF. Swap each GIF for its
@@ -172,7 +172,7 @@ Examples used in this document: `stats_f21/mcs_tracks_final_extc_20200101.0000_2
 
 The monthly and annual gridded products used for the climatology figures (MCS precipitation, MCS precipitation/cloud hours, and MCS number; sub-directories `monthly/` and `monthly_extc/` of the stats folders) are derived from the pixel files with `cloudtracknumber > 0` (MCS cloud and rainfall) and `pcptracknumber > 0` (MCS precipitation hours).
 
-**Data access.** The TC-excluded track statistics (`final_extc`), monthly rain maps and multi-year climatology files of both definitions (six `tar.gz` archives, 29.6 GB) are archived on Zenodo (`TODO: V3 DOI`). The full pixel-level dataset (see the volume table below) is shared through NERSC Globus on request. Please contact Zhe Feng (zhe.feng@pnnl.gov) with a short description of the intended use, and a Globus link to the V3 folder (`MCS_Global/V3/`) will be provided; access is granted per request so that data usage can be tracked. (V2 is at `MCS_Global/V2/`.)
+**Data access.** The TC-excluded track statistics (`final_extc`), monthly rain maps and multi-year climatology files of both definitions (six `tar.gz` archives, 29.6 GB) are archived on Zenodo (**<https://doi.org/10.5281/zenodo.23523604>**). The full pixel-level dataset (see the volume table below) is shared through NERSC Globus on request. Please contact Zhe Feng (zhe.feng@pnnl.gov) with a short description of the intended use, and a Globus link to the V3 folder (`MCS_Global/V3/`) will be provided; access is granted per request so that data usage can be tracked. (V2 is at `MCS_Global/V2/`.)
 
 **Data volume.** Sizes were measured in October 2026 (apparent file sizes; 1 GB = 10⁹ bytes, 1 TB = 10¹² bytes). All files are NetCDF4.
 
